@@ -1,0 +1,38 @@
+1. a
+Assuming that each warp is 32 threads. We know that only blocks in the edge of the grid have control divergence.
+This means that each 992 threads worth of blocks are ok, and only the remaining 32 in the end are of any concern.
+In each row of a 32x32, there is 1 warp. in each warp 8 threads will do one thing, and 24 will do another, causing divergence
+
+2. b
+8 warps per block * 50 blocs per thread in x dir * 38 blocks per thread in y dir
+
+3. b
+no block in the x dir has controlled divergence. This is because all 800 pixels will be accounted for in a 16x16 grid perfectly.
+It is only in the Y direction, where there needs to be a difference. In each block, 4 warps will be doing one thing, and another 4 will be doing another. In this Case, there is no divergence since no warp will be doing multiple things.
+
+4. a
+In this case, every warp in every block in the last column will have controlled divergence. There are 50 rows, and 8 warps that diverge, meaning 400 divergent warps
+
+5. c
+the last warp in the last block of each column will diverge, leading to 37 warps. each warp in teh last block on each row will diverge, leading to 50 blocks * 8 warps
+
+6. d
+Using 1000x1000 matrix, we know that a 992x992 matrix will theoretically have no divergence because it is perfectly divisible. We also know that a 63x63 grid of 16x16 matrices. 62.5 * 8 warps per block = 500
+
+7. b
+1536/512 = 3
+1536%512 = 0
+1536/64 > 8 not possible
+1536/128 > 8 not possible
+1536/1024 = 1.5 ->  half will not be possible. 
+Therefore, 1 max = 1024
+
+8. a
+each block is weighted twice. Thus, it can be called twice 
+
+9. d
+we want to skip 1 block dim ahead, since a thread process 2 values, and we do not want to double dip
+
+10. d
+The index of M is (thread dependent) + not thread dependent. 
+The reverse is true for both other terms, which is a criterion for coalesced access
